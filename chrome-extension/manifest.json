@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Deterministic Password Manager",
+  "version": "1.0",
+  "description": "A deterministic password manager that generates passwords based on a passphrase and the current URL.",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/bundle.js"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "web_accessible_resources": [{
+    "resources": ["node_modules/argon2-browser/dist/argon2.wasm"],
+    "matches": ["<all_urls>"]
+  }]
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Deterministic Password Manager</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label, input, button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input, button {
+            padding: 10px;
+            background-color: #333333;
+            border: 1px solid #770000;
+            color: white;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #990000;
+            cursor: pointer;
+        }
+        #password {
+            margin-bottom: 0; /* Align buttons directly under the password input */
+        }
+        .password-actions {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .back-button {
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content">
+        <label for="passphrase">Passphrase:</label>
+        <input type="text" id="passphrase" placeholder="Enter your passphrase">
+        <label for="domain">Domain URL:</label>
+        <input type="text" id="domain" placeholder="Enter the domain URL">
+        <button id="generatePassword">Generate Password</button>
+        <button id="generatePhrase">Generate Unique Passphrase</button>
+      </div>
+    <div id="password-content" style="display: none;">
+        <span class="back-button">←</span>
+        <input type="password" id="password" readonly>
+        <div class="password-actions">
+            <button id="toggleVisibility">Show</button>
+            <button id="copyButton">Copy</button>
+        </div>
+    </div>
+    <script src="dist/bundle.js"></script>
+</body>
+</html>
