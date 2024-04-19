@@ -5,7 +5,12 @@
   "description": "A deterministic password manager that generates passwords based on a passphrase and the current URL.",
   "permissions": ["activeTab"],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "password.png",
+      "48": "password.png",
+      "128": "password.png"
+    }
   },
   "content_scripts": [
     {
