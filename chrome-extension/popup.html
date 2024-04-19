@@ -5,47 +5,83 @@
     <title>Deterministic Password Manager</title>
     <style>
         body {
-            width: 300px;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        label, input, button {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        input, button {
-            padding: 10px;
-            background-color: #333333;
-            border: 1px solid #770000;
-            color: white;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #990000;
-            cursor: pointer;
-        }
-        #password {
-            margin-bottom: 0; /* Align buttons directly under the password input */
-        }
-        .password-actions {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-        }
-        .back-button {
-            cursor: pointer;
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-        }
+    width: 300px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box; /* Make sure padding and borders are within the element's total width and height */
+}
+
+label, input, button, .link {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+input, button {
+    padding: 10px;
+    background-color: #333333;
+    border: 1px solid #770000;
+    color: white;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #990000;
+    cursor: pointer;
+}
+
+.password-actions, .passphrase-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px; /* Adjust spacing to input */
+}
+
+.password-actions button, .passphrase-actions button {
+    flex: 1;
+    margin-right: 5px; /* Space between buttons */
+}
+
+.password-actions button:last-child, .passphrase-actions button:last-child {
+    margin-right: 0; /* No margin on the right of the last button */
+}
+
+#password, #password-content, #passphrase-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#password {
+    margin-top: 5px
+}
+
+#copyPassphrase {
+    margin-left: 5px;
+}
+
+.back-button, .link {
+    cursor: pointer;
+    color: white;
+}
+
+.link {
+    text-decoration: underline;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+
     </style>
 </head>
 <body>
@@ -55,10 +91,18 @@
         <label for="domain">Domain URL:</label>
         <input type="text" id="domain" placeholder="Enter the domain URL">
         <button id="generatePassword">Generate Password</button>
+        <div class="link" id="needPassphrase">Need a master passphrase?</div>
+    </div>
+    <div id="passphrase-content" style="display: none;">
+        <span class="back-button">← Back</span>
+        <div class="passphrase-actions">
+            <input type="text" id="generatedPassphrase" readonly>
+            <button id="copyPassphrase">Copy</button>
+        </div>
         <button id="generatePhrase">Generate Unique Passphrase</button>
-      </div>
+    </div>
     <div id="password-content" style="display: none;">
-        <span class="back-button">←</span>
+        <span class="back-button">← Back</span>
         <input type="password" id="password" readonly>
         <div class="password-actions">
             <button id="toggleVisibility">Show</button>

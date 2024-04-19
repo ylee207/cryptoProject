@@ -9,13 +9,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const domainInput = document.getElementById('domain');
     const generateButton = document.getElementById('generatePassword');
     const mainContent = document.getElementById('main-content');
+    const passphraseContent = document.getElementById('passphrase-content');
     const passwordContent = document.getElementById('password-content');
     const passwordInput = document.getElementById('password');
-    const backButton = document.querySelector('.back-button');
+    const needPassphrase = document.getElementById('needPassphrase');
+    const backButton = document.querySelectorAll('.back-button'); // Now selects all back buttons
     const toggleButton = document.getElementById('toggleVisibility');
     const copyButton = document.getElementById('copyButton');
     const generatePhraseButton = document.getElementById('generatePhrase');
+    const copyPassphraseButton = document.getElementById('copyPassphrase');
+    const generatedPassphraseInput = document.getElementById('generatedPassphrase');
 
+    needPassphrase.addEventListener('click', function() {
+        mainContent.style.display = 'none';
+        passphraseContent.style.display = 'block';
+    });
+
+    backButton.forEach(button => button.addEventListener('click', function() {
+        passphraseContent.style.display = 'none';
+        passwordContent.style.display = 'none';
+        mainContent.style.display = 'block';
+    }));
+
+    generatePhraseButton.addEventListener('click', () => {
+        const mnemonic = genMnemonic();
+        generatedPassphraseInput.value = mnemonic;
+    });
+
+    copyPassphraseButton.addEventListener('click', function() {
+        navigator.clipboard.writeText(generatedPassphraseInput.value).then(() => {
+            alert('Passphrase copied to clipboard!');
+        }).catch(err => {
+            alert('Failed to copy passphrase: ' + err);
+        });
+    });
     // Automatically fill in the domain field with the current tab's URL
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var currentUrl = new URL(tabs[0].url);
@@ -40,23 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    generatePhraseButton.addEventListener('click', () => {
-        const mnemonic = genMnemonic();
-        // Assuming there's an input or another element to display the mnemonic
-        document.getElementById('passphrase').value = mnemonic;
-    });
-
-
     function genMnemonic() {
         // Generate a random mnemonic (uses crypto.getRandomValues under the hood)
         const mnemonic = generateMnemonic(); // Default is 128 bits of entropy
         return mnemonic;
     }
-  
-    backButton.addEventListener('click', function() {
-        mainContent.style.display = 'block';
-        passwordContent.style.display = 'none';
-    });
   
     generateButton.addEventListener('click', async function() {
         const passphrase = passphraseInput.value;
@@ -64,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = await generatePassword(passphrase, domain);
         passwordInput.value = password;
         mainContent.style.display = 'none';
-        passwordContent.style.display = 'flex';
+        passwordContent.style.display = 'block';
     });
   
     async function generatePassword(passphrase, domain) {
@@ -73,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
             result = await argon2.hash({
                 pass: passphrase, // Combine your password and domain as the input string
                 salt: domain, // You should generate a secure, random salt instead
-                type: argon2.ArgonType.Argon2id, // Specify Argon2 type (Argon2id, Argon2i, or Argon2d)
-                hashLength: 32, // Length of the hash in bytes
-                time: 1, // Amount of computation realized, given in number of iterations
+                type: argon2.ArgonType.Argon2d, // Specify Argon2 type (Argon2id, Argon2i, or Argon2d)
+                hashLength: 24, // Length of the hash in bytes
+                time: 100, // Amount of computation realized, given in number of iterations
                 mem: 1024, // Memory usage, given in kibibytes
                 parallelism: 1 // Amount of parallelism (threads to run in parallel - does not affect WebAssembly)
             });
@@ -87,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // convert to my accepted characters
 
-        const accpetedCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!$%&'
+        const accpetedCharacters = 'abcdefghijklmnopqrstuvwxyz!#$%&*.-_?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&*.-_?'
 
         let password = '';
         for (let i = 0; i < result.hash.length; i++) {
