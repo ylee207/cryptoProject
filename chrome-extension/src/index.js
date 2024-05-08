@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Automatically fill in the domain field with the current tab's URL
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var currentUrl = new URL(tabs[0].url);
-        domainInput.value = currentUrl.hostname; // using hostname to get the domain only
+        domainInput.value = currentUrl.hostname; // using hostname field to get the domain only
     });
   
     toggleButton.addEventListener('click', function() {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function genMnemonic() {
-        // Generate a random mnemonic (uses crypto.getRandomValues under the hood)
+        // Generate a random mnemonic
         const mnemonic = generateMnemonic(); // Default is 128 bits of entropy
         return mnemonic;
     }
@@ -83,31 +83,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   
     async function generatePassword(passphrase, domain) {
+        const format = document.getElementById('formatOptions').value;
+        let acceptedCharacters;
+        
+        switch (format) {
+            case 'noSpecial':
+                acceptedCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                break;
+            case 'allLetters':
+                acceptedCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                break;
+            default:
+                acceptedCharacters = 'abcdefghijklmnopqrstuvwxyz!#$%&*.-_?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&*.-_?'
+                break;
+        }
+        
         let result;
         try {
             result = await argon2.hash({
-                pass: passphrase, // Combine your password and domain as the input string
-                salt: domain, // You should generate a secure, random salt instead
-                type: argon2.ArgonType.Argon2d, // Specify Argon2 type (Argon2id, Argon2i, or Argon2d)
-                hashLength: 24, // Length of the hash in bytes
-                time: 100, // Amount of computation realized, given in number of iterations
-                mem: 1024, // Memory usage, given in kibibytes
-                parallelism: 1 // Amount of parallelism (threads to run in parallel - does not affect WebAssembly)
+                pass: passphrase,
+                salt: domain,
+                type: argon2.ArgonType.Argon2d,
+                hashLength: 24,
+                time: 100,
+                mem: 1024,
+                parallelism: 1
             });
 
         } catch (err) {
             console.error('Argon2 error:', err);
-            return ''; // Return empty string or handle error appropriately
+            return '';
         }
 
-        // convert to my accepted characters
-
-        const accpetedCharacters = 'abcdefghijklmnopqrstuvwxyz!#$%&*.-_?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&*.-_?'
-
+        // convert to accepted characters
         let password = '';
         for (let i = 0; i < result.hash.length; i++) {
-            const index = result.hash[i] % accpetedCharacters.length;
-            password += accpetedCharacters[index];
+            const index = result.hash[i] % acceptedCharacters.length;
+            password += acceptedCharacters[index];
         }
         return password;
     }

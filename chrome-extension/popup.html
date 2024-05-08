@@ -18,7 +18,7 @@
 }
 
 *, *:before, *:after {
-    box-sizing: border-box; /* Make sure padding and borders are within the element's total width and height */
+    box-sizing: border-box;
 }
 
 label, input, button, .link {
@@ -43,16 +43,16 @@ button {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    margin-top: 5px; /* Adjust spacing to input */
+    margin-top: 5px;
 }
 
 .password-actions button, .passphrase-actions button {
     flex: 1;
-    margin-right: 5px; /* Space between buttons */
+    margin-right: 5px;
 }
 
 .password-actions button:last-child, .passphrase-actions button:last-child {
-    margin-right: 0; /* No margin on the right of the last button */
+    margin-right: 0;
 }
 
 #password, #password-content, #passphrase-content {
@@ -68,6 +68,11 @@ button {
 
 #copyPassphrase {
     margin-left: 5px;
+}
+
+#generatePassword {
+    margin-top: 20px;
+
 }
 
 .back-button, .link {
@@ -90,6 +95,12 @@ button {
         <input type="text" id="passphrase" placeholder="Enter your passphrase">
         <label for="domain">Domain URL:</label>
         <input type="text" id="domain" placeholder="Enter the domain URL">
+        <label for="formatOptions">Password Format:</label>
+        <select id="formatOptions">
+            <option value="default">Default</option>
+            <option value="noSpecial">No Special Characters</option>
+            <option value="allLetters">All Letters</option>
+        </select>
         <button id="generatePassword">Generate Password</button>
         <div class="link" id="needPassphrase">Need a master passphrase?</div>
     </div>
